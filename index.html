@@ -101,6 +101,14 @@
     .frame{margin:0 auto;max-width:100%}
     .export{padding:14px 14px 40px}
     textarea.code{height:150px}
+    /* accordion: collapse each control group into a tap-to-expand card */
+    .panel{padding:12px 12px 22px}
+    .group.acc{border:1px solid var(--ui-line);border-radius:12px;margin-bottom:10px;background:var(--ui-panel);overflow:hidden}
+    .group.acc>.ahead{display:flex!important;align-items:center;justify-content:space-between;gap:8px;margin:0!important;padding:15px 14px;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-ink);-webkit-user-select:none;user-select:none}
+    .group.acc>.ahead::after{content:"";width:8px;height:8px;border-right:2px solid var(--ui-faint);border-bottom:2px solid var(--ui-faint);transform:rotate(-45deg);transition:transform .2s;flex:none;margin-left:auto}
+    .group.acc:not(.collapsed)>.ahead::after{transform:rotate(45deg)}
+    .group.acc>.abody{padding:2px 14px 16px}
+    .group.acc.collapsed>.abody{display:none}
   }
   @media (max-width:460px){
     .patterns{gap:6px}.pat b{font-size:10px}
@@ -631,5 +639,22 @@ $('#uiTheme').addEventListener('click',function(){var r=document.documentElement
 
 // show the default (FONTECH) logo in the upload preview on load
 (function(){ if(state.logoData && !state.useText){ var pv=$('#logoPrev'); pv.src=state.logoData; pv.hidden=false; $('#logoDropText').textContent='FONTECH (โลโก้เริ่มต้น) — คลิกเพื่อเปลี่ยน'; } })();
+/* Mobile accordion: turn each control group into a collapsible tap-to-expand section */
+(function(){
+  document.querySelectorAll('.panel > .group').forEach(function(g,idx){
+    if(g.querySelector(':scope > .abody')) return;
+    g.classList.add('acc');
+    var head=g.firstElementChild; if(!head) return;
+    head.classList.add('ahead');
+    var body=document.createElement('div'); body.className='abody';
+    while(head.nextSibling) body.appendChild(head.nextSibling);
+    g.appendChild(body);
+    head.addEventListener('click',function(e){
+      if(e.target.closest('button,input,a,select,textarea')) return;
+      g.classList.toggle('collapsed');
+    });
+    if(idx>0) g.classList.add('collapsed'); // first group (Pattern) open; rest collapsed
+  });
+})();
 setDevice('desktop');render();
 </script>
