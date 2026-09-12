@@ -446,15 +446,19 @@ function buildWelcome(state){
 
 /* ClearPass Web Login skin (Header + Footer), from current brand */
 function buildClearPass(state){
-  var p=palette(state.accent), logo=logoMarkup(state);
+  var p=palette(state.accent), logo=logoMarkup(state), t=strs(state);
   var header='<style>{literal}\n'+
     '  :root{--brand:'+p.brand+';--brandLt:'+p.brandLt+';--deep:'+p.deep+';--ink:'+p.ink+';--dim:'+p.dim+';--field:'+p.field+';--field-bd:'+p.fieldBd+';--hair:'+p.hair+';--danger:#d6413f;--onA:'+p.onAccent+'}\n'+
-    '  html,body{margin:0!important;padding:0!important;min-height:100%;color:var(--ink)!important;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,"Noto Sans Thai","Leelawadee UI",sans-serif!important;background:radial-gradient(120% 90% at 12% 6%,'+hexToRgba(p.brandLt,.20)+',transparent 55%),linear-gradient(160deg,'+p.bg+','+p.bg2+') fixed!important}\n'+
+    '  html,body{margin:0!important;padding:0!important;min-height:100%;color:var(--ink)!important;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,"Noto Sans Thai","Leelawadee UI",sans-serif!important;background:radial-gradient(120% 90% at 15% 10%,'+hexToRgba(p.brandLt,.28)+',transparent 55%),radial-gradient(100% 90% at 90% 100%,'+hexToRgba(p.brand,.22)+',transparent 55%),linear-gradient(155deg,var(--deep),'+p.deep2+') fixed!important}\n'+
     '  #header,#footer,#banner,.banner{display:none!important}#container,#content,#main,.AppBody,.contentwrapper,form{background:transparent!important;border:0!important;box-shadow:none!important;max-width:none!important;width:auto!important;margin:0!important}\n'+
     '  .itg-card{max-width:430px;margin:6vh auto;background:#fff;border:1px solid var(--hair);border-radius:22px;overflow:hidden;box-shadow:0 30px 60px -22px rgba(0,0,0,.35)}\n'+
     '  .itg-top{padding:30px 34px 22px;text-align:center;color:#eafaef;background:radial-gradient(120% 100% at 12% 0%,'+hexToRgba(p.brandLt,.34)+',transparent 55%),linear-gradient(155deg,var(--deep),'+p.deep2+')}\n'+
     '  .itg-logo{display:inline-block;background:#fff;border-radius:12px;padding:9px 16px}.itg-logo .wm{font:800 24px/1 -apple-system,Arial,sans-serif}.itg-logo .wm1{color:#1a1a1a}.itg-logo .wm2{color:var(--brand)}\n'+
-    '  .itg-eyebrow{margin:14px 0 0;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#8fe89e;font-weight:700}.itg-title{margin:8px 0 4px;font-size:20px;font-weight:800}.itg-sub{margin:0;font-size:13px;color:#a9cdb4}.itg-body{padding:26px 34px 6px}\n'+
+    '  .itg-eyebrow{margin:14px 0 0;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--brandLt);font-weight:700;display:inline-flex;align-items:center;gap:7px}.itg-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:currentColor}\n'+
+    '  .itg-hero{margin:12px 0 10px;font-size:clamp(21px,4vw,27px);line-height:1.1;letter-spacing:-.02em;font-weight:800;color:#fff;text-wrap:balance}.itg-hero em{font-style:normal;color:var(--brandLt)}\n'+
+    '  .itg-lead{margin:0 auto;max-width:30ch;font-size:13px;line-height:1.55;color:#a9cdb4}\n'+
+    '  .itg-perks{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:16px 0 2px}.itg-perk{display:flex;align-items:center;gap:6px;font-size:12px;color:#a9cdb4}.itg-perk svg{width:15px;height:15px;color:var(--brandLt)}\n'+
+    '  .itg-title{margin:8px 0 4px;font-size:20px;font-weight:800}.itg-sub{margin:0;font-size:13px;color:#a9cdb4}.itg-body{padding:24px 34px 6px}\n'+
     '  .itg-card input[type="text"],.itg-card input[type="password"],.itg-card input[type="email"]{width:100%!important;box-sizing:border-box;font-size:16px;color:var(--ink);background:var(--field)!important;border:1px solid var(--field-bd)!important;border-radius:12px!important;padding:13px 14px!important;margin:6px 0 14px!important;outline:none}\n'+
     '  .itg-card input[type="text"]:focus,.itg-card input[type="password"]:focus{border-color:var(--brand)!important;box-shadow:0 0 0 4px '+hexToRgba(p.brand,.14)+'!important}\n'+
     '  .itg-card table,.itg-card tbody,.itg-card tr,.itg-card td{width:100%!important;border:0!important;background:transparent!important;padding:0!important;text-align:left!important}\n'+
@@ -464,8 +468,11 @@ function buildClearPass(state){
     '  .itg-card .nwaError,.itg-card .error,.itg-card #errormsg{background:'+hexToRgba('#d6413f',.10)+'!important;border:1px solid var(--danger)!important;color:var(--danger)!important;border-radius:10px!important;padding:10px 12px!important;margin:0 0 12px!important;font-size:13px!important}.itg-card a{color:var(--brand)}\n'+
     '  @media(max-width:480px){.itg-card{margin:0 auto;border-radius:0;min-height:100vh}}\n'+
     '{/literal}</style>\n\n<div class="itg-card">\n  <div class="itg-top">\n    <span class="itg-logo">'+logo+'</span>\n'+
-    '    <p class="itg-eyebrow">'+esc(state.ssid)+'</p>\n    <p class="itg-title">'+esc(strs(state).signin)+'</p>\n'+
-    '    <p class="itg-sub">'+(state.lang==='th'?'ลงชื่อเข้าใช้เพื่อเชื่อมต่ออินเทอร์เน็ต · Sign in to get online':'Sign in to reach the internet')+'</p>\n  </div>\n  <div class="itg-body">';
+    '    <p class="itg-eyebrow"><span class="dot"></span>'+t.online+'</p>\n'+
+    '    <p class="itg-hero">'+t.welcome+'</p>\n'+
+    '    <p class="itg-lead">'+t.sub+'</p>\n'+
+    '    <div class="itg-perks"><span class="itg-perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>'+t.p1+'</span><span class="itg-perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'+t.p2+'</span></div>\n'+
+    '  </div>\n  <div class="itg-body">';
   var footer='  </div>\n  <div style="padding:14px 34px 22px;border-top:1px solid rgba(18,48,41,.10);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:11.5px;color:'+p.faint+'">\n'+
     '    <span>'+(state.lang==='th'?'เชื่อมต่อไม่ได้? ติดต่อประชาสัมพันธ์':'Need help? Contact reception')+'</span>\n'+
     '    <span style="letter-spacing:.14em;text-transform:uppercase">'+state.tagline+'</span>\n  </div>\n</div>';
