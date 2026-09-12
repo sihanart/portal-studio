@@ -462,12 +462,27 @@ function buildClearPass(state){
     '  .itg-card .nwaError,.itg-card .error,.itg-card #errormsg{background:'+hexToRgba('#d6413f',.10)+'!important;border:1px solid var(--danger)!important;color:var(--danger)!important;border-radius:10px!important;padding:10px 12px!important;margin:0 0 12px!important;font-size:13px!important}.itg-card a{color:var(--brand)}\n'+
     '  @media(max-width:480px){.itg-card{margin:0 auto;border-radius:0;min-height:100vh}}\n'+
     '{/literal}</style>\n\n<div class="itg-card">\n  <div class="itg-top">\n    <span class="itg-logo">'+logo+'</span>\n'+
-    '    <p class="itg-eyebrow">Guest Wi-Fi · '+state.ssid+'</p>\n    <p class="itg-title">'+(state.lang==='th'?'ยินดีต้อนรับ / Welcome':'Welcome')+'</p>\n'+
+    '    <p class="itg-eyebrow">'+esc(state.ssid)+'</p>\n    <p class="itg-title">'+esc(strs(state).signin)+'</p>\n'+
     '    <p class="itg-sub">'+(state.lang==='th'?'ลงชื่อเข้าใช้เพื่อเชื่อมต่ออินเทอร์เน็ต · Sign in to get online':'Sign in to reach the internet')+'</p>\n  </div>\n  <div class="itg-body">';
   var footer='  </div>\n  <div style="padding:14px 34px 22px;border-top:1px solid rgba(18,48,41,.10);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:11.5px;color:'+p.faint+'">\n'+
     '    <span>'+(state.lang==='th'?'เชื่อมต่อไม่ได้? ติดต่อประชาสัมพันธ์':'Need help? Contact reception')+'</span>\n'+
     '    <span style="letter-spacing:.14em;text-transform:uppercase">'+state.tagline+'</span>\n  </div>\n</div>';
   return {header:header, footer:footer};
+}
+
+/* Preview of the ClearPass skin as it actually renders — ClearPass injects its
+   own form (auth_user/auth_pass) between our Header and Footer. Strips the
+   Smarty {literal} tags (browser-only preview). */
+function buildClearPassPreview(state){
+  var cp=buildClearPass(state), t=strs(state);
+  var head=cp.header.replace('{literal}','').replace('{/literal}','');
+  var mock='<form id="login_form" method="post" action="#" onsubmit="return false;"><table><tbody>'+
+    '<tr><td><label for="auth_user">'+esc(t.user)+'</label><input type="text" id="auth_user" name="auth_user" placeholder="guest.name"></td></tr>'+
+    '<tr><td><label for="auth_pass">'+esc(t.pass)+'</label><input type="password" id="auth_pass" name="auth_pass" placeholder="********"></td></tr>'+
+    '<tr><td><label><input type="checkbox" name="auth_terms"> '+esc(t.agree)+' '+esc(t.terms)+'</label></td></tr>'+
+    '<tr><td><input type="submit" class="nwaLoginButton" value="'+esc(t.connect)+'"></td></tr>'+
+    '</tbody></table></form>';
+  return '<!DOCTYPE html>\n<html lang="'+(state.lang==='th'?'th':'en')+'">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>'+esc(state.ssid)+'</title>\n</head>\n<body>\n'+head+mock+cp.footer+'\n</body>\n</html>\n';
 }
 
 /* ============================ state + UI ============================ */
@@ -477,13 +492,15 @@ var state={pattern:'split',platform:'aos8',accent:'#1a1a1a',brandName:'Guest Por
 var PRESETS=['#1a1a1a','#334155','#2563eb','#0d9488','#7c3aed','#e11d48','#ff6a00','#0ea5e9'];
 var HINTS={aos8:'Controller internal — POST /cgi-bin/login, fields user/password.',
   instant:'Aruba Instant — POST securelogin.arubanetworks.com, adds cmd=authenticate + url.',
-  clearpass:'ClearPass — POST /cgi-bin/login + passes url through. Also generates Header/Footer skin in Code tab.'};
+  clearpass:'ClearPass hosts the login form itself — you supply only a skin (Header/Footer HTML in the Code tab), so the design is always a centered card and the Pattern above does not apply. Preview shows the real result.'};
 
 var $=function(s){return document.querySelector(s);};
 function render(){
   document.documentElement.style.setProperty('--ui-accent',state.accent);
-  var html=buildLogin(state);
-  $('#pv').srcdoc=html;
+  $('#pv').srcdoc = state.platform==='clearpass' ? buildClearPassPreview(state) : buildLogin(state);
+  // ClearPass renders its own form → the visual is always the stacked skin; Pattern doesn't apply
+  var patterns=document.getElementById('patterns');
+  if(patterns) patterns.style.opacity = state.platform==='clearpass' ? '.45' : '1';
   if(!$('#exportView').hidden) buildExport();
 }
 function buildExport(){
