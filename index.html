@@ -380,20 +380,29 @@ function lampLayout(state,t,f,chip,p,logo){
   var step1=th?'1. เปิดไฟ':'1. Turn on the light';
   var step2=th?'2. เชื่อมต่อ Wi-Fi':'2. Connect to Guest Wi-Fi';
   var powered='Powered by '+esc(state.brandName||'Network');
-  var LAMP='<svg class="lampsvg" viewBox="0 0 220 240" fill="none">'+
+  var LAMP='<svg class="lampsvg" viewBox="0 0 240 262" fill="none">'+
     '<defs>'+
-    '<radialGradient id="lg" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#ffe8ab" stop-opacity=".95"/><stop offset="1" stop-color="#ffe8ab" stop-opacity="0"/></radialGradient>'+
-    '<linearGradient id="lc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffdf9e" stop-opacity=".55"/><stop offset="1" stop-color="#ffdf9e" stop-opacity="0"/></linearGradient>'+
+    '<linearGradient id="mtl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#39404a"/><stop offset=".42" stop-color="#b4bec9"/><stop offset=".6" stop-color="#d2dae3"/><stop offset="1" stop-color="#333a43"/></linearGradient>'+
+    '<radialGradient id="joint" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#eef2f7"/><stop offset=".5" stop-color="#8f99a6"/><stop offset="1" stop-color="#2f363f"/></radialGradient>'+
+    '<linearGradient id="shade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dbe2ea"/><stop offset=".45" stop-color="#98a3b1"/><stop offset="1" stop-color="#3f4753"/></linearGradient>'+
+    '<radialGradient id="base" cx=".4" cy=".25" r=".9"><stop offset="0" stop-color="#b7c1cc"/><stop offset="1" stop-color="#282e37"/></radialGradient>'+
+    '<radialGradient id="glowR" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff7d8"/><stop offset=".38" stop-color="#ffe090" stop-opacity=".78"/><stop offset="1" stop-color="#ffe090" stop-opacity="0"/></radialGradient>'+
+    '<radialGradient id="bulbR" cx=".5" cy=".38" r=".62"><stop offset="0" stop-color="#fffef7"/><stop offset=".55" stop-color="#ffe7a4"/><stop offset="1" stop-color="#f2c563"/></radialGradient>'+
+    '<linearGradient id="coneG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe9ad" stop-opacity=".5"/><stop offset="1" stop-color="#ffe9ad" stop-opacity="0"/></linearGradient>'+
+    '<radialGradient id="poolG" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffdf9e" stop-opacity=".55"/><stop offset="1" stop-color="#ffdf9e" stop-opacity="0"/></radialGradient>'+
     '</defs>'+
-    '<path class="cone" d="M132 96 L92 216 L176 216 Z" fill="url(#lc)"/>'+
-    '<ellipse cx="72" cy="220" rx="60" ry="8" fill="rgba(0,0,0,.35)"/>'+
-    '<rect x="34" y="206" width="78" height="13" rx="6.5" fill="#39414c"/>'+
-    '<line x1="72" y1="208" x2="102" y2="122" stroke="#525b66" stroke-width="9" stroke-linecap="round"/>'+
-    '<circle cx="102" cy="120" r="8" fill="#646e7a"/>'+
-    '<line x1="102" y1="120" x2="156" y2="86" stroke="#525b66" stroke-width="9" stroke-linecap="round"/>'+
-    '<g transform="rotate(54 150 82)"><rect x="120" y="58" width="54" height="44" rx="12" fill="#5b6470"/><rect x="120" y="58" width="54" height="13" rx="6.5" fill="#6d7783"/></g>'+
-    '<circle class="glow" cx="132" cy="98" r="34" fill="url(#lg)"/>'+
-    '<circle class="bulb" cx="132" cy="98" r="11" fill="#39414c"/>'+
+    '<path class="cone" d="M150 138 L108 242 L192 242 Z" fill="url(#coneG)"/>'+
+    '<ellipse class="pool" cx="150" cy="242" rx="76" ry="15" fill="url(#poolG)"/>'+
+    '<ellipse cx="92" cy="248" rx="46" ry="9" fill="#080b10" opacity=".4"/>'+
+    '<ellipse cx="92" cy="240" rx="42" ry="11" fill="url(#base)"/>'+
+    '<rect x="84" y="224" width="16" height="18" rx="5" fill="url(#mtl)"/>'+
+    '<path d="M92 226 C 88 150, 152 152, 150 120" stroke="url(#mtl)" stroke-width="13" fill="none" stroke-linecap="round"/>'+
+    '<circle cx="150" cy="118" r="9" fill="url(#joint)"/>'+
+    '<path d="M124 108 q26 -15 52 0 l-8 30 q-18 9 -36 0 z" fill="url(#shade)"/>'+
+    '<ellipse cx="150" cy="108" rx="26" ry="6.5" fill="#dee4ed"/>'+
+    '<ellipse class="mouth" cx="150" cy="137" rx="17" ry="5"/>'+
+    '<circle class="glow" cx="150" cy="142" r="42" fill="url(#glowR)"/>'+
+    '<circle class="bulb" cx="150" cy="140" r="11"/>'+
     '</svg>';
   var wifi='<svg class="wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5a15 15 0 0 1 20 0"/><path d="M5 12a10 10 0 0 1 14 0"/><path d="M8.5 15.5a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg>';
   var keyi='<svg class="keyi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15 20 3"/><path d="M17.5 5.5 20 8"/><path d="M15 8l2 2"/></svg>';
@@ -413,16 +422,17 @@ function lampLayout(state,t,f,chip,p,logo){
     '  .lamp-side{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:48px 34px;text-align:center;background:radial-gradient(120% 85% at 50% 22%,#212834,#0b0e13);transition:background .55s}'+
     '  body.lit .lamp-side{background:radial-gradient(120% 85% at 50% 18%,#34414f,#12161d)}'+
     '  .lampsvg{width:170px;height:auto;display:block}'+
-    '  .bulb{transition:fill .35s}.glow,.cone{opacity:0;transition:opacity .5s}'+
-    '  body.lit .bulb{fill:#fff1ba}body.lit .glow{opacity:1}body.lit .cone{opacity:1}'+
+    '  .bulb{fill:#3b424c;transition:fill .4s}.mouth{fill:#2a3038;transition:fill .4s}.glow,.cone,.pool{opacity:0;transition:opacity .55s}'+
+    '  body.lit .bulb{fill:url(#bulbR)}body.lit .mouth{fill:#ffdf9e}body.lit .glow{opacity:1}body.lit .cone{opacity:1}body.lit .pool{opacity:1}'+
     '  .toggle{position:relative;width:76px;height:34px;border-radius:999px;background:#3b414b;cursor:pointer;transition:background .3s;box-shadow:inset 0 1px 3px rgba(0,0,0,.55)}'+
     '  .toggle .tg-knob{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;transition:left .3s;box-shadow:0 2px 5px rgba(0,0,0,.45)}'+
     '  .toggle .tg-txt{position:absolute;top:50%;right:13px;transform:translateY(-50%);font-size:10px;font-weight:800;letter-spacing:.12em;color:#c4ccd6}'+
     '  body.lit .toggle{background:linear-gradient(135deg,var(--brandLt),var(--brand))}body.lit .toggle .tg-knob{left:45px}body.lit .toggle .tg-txt{right:auto;left:13px;color:#fff}'+
     '  .step{margin:0;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#cfd8e3}'+
     '  .chev{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;color:var(--brandLt);font-size:30px;font-weight:700;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}'+
-    '  .form-side{position:relative;padding:42px 40px 30px;background:#fbfcfe;transition:opacity .5s,filter .5s}'+
-    '  body.off .form-side{opacity:.4;filter:grayscale(.55);pointer-events:none;-webkit-user-select:none;user-select:none}'+
+    '  .lampwrap{transition:grid-template-columns .6s cubic-bezier(.4,0,.2,1)}'+
+    '  .form-side{position:relative;padding:42px 40px 30px;background:#fbfcfe;overflow:hidden;min-width:0;transition:opacity .4s .15s}'+
+    '  body.off .lampwrap{grid-template-columns:1fr 0fr}body.off .form-side{opacity:0;pointer-events:none}body.off .chev{opacity:0}'+
     '  .wifi{position:absolute;top:24px;right:28px;width:32px;height:32px;color:var(--brand)}'+
     '  .form-side h2{margin:0 0 22px;font-size:16px;font-weight:800;color:var(--ink);letter-spacing:.02em;text-transform:uppercase;padding-right:40px}'+
     '  .lampform label{display:block;font-size:12px;font-weight:600;color:var(--dim);margin:0 0 6px}'+
@@ -433,7 +443,7 @@ function lampLayout(state,t,f,chip,p,logo){
     '  .cnow{width:100%;margin-top:6px;font:inherit;font-weight:800;font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--onAccent);background:linear-gradient(135deg,var(--brandLt),var(--brand));border:0;border-radius:999px;padding:15px;cursor:pointer;box-shadow:0 16px 32px -12px var(--btnShadow);transition:transform .15s}'+
     '  .cnow:hover{transform:translateY(-2px)}'+
     '  .powered{margin:18px 0 0;text-align:center;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}'+
-    '  @media(max-width:720px){.lampwrap{grid-template-columns:1fr;max-width:400px}.chev{display:none}.lamp-side{padding:34px}}';
+    '  @media(max-width:720px){.lampwrap{grid-template-columns:1fr;max-width:400px}.chev{display:none}.lamp-side{padding:34px}body.off .form-side{display:none}}';
 
   var switchJS='\n  <script>(function(){var b=document.body,s=document.getElementById("sw");b.classList.add("off");'+
     'function set(on){b.classList.toggle("lit",on);b.classList.toggle("off",!on);s.setAttribute("aria-checked",on?"true":"false");var x=s.querySelector(".tg-txt");if(x)x.textContent=on?"ON":"OFF";var u=document.getElementById("user");if(on&&u)setTimeout(function(){u.focus();},550);}'+
