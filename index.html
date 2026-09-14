@@ -440,11 +440,10 @@ function lampLayout(state,t,f,chip,p,logo){
     '  .toggle .tg-txt{position:absolute;top:50%;right:13px;transform:translateY(-50%);font-size:10px;font-weight:800;letter-spacing:.12em;color:#c4ccd6}'+
     '  body.lit .toggle{background:linear-gradient(135deg,var(--brandLt),var(--brand))}body.lit .toggle .tg-knob{left:45px}body.lit .toggle .tg-txt{right:auto;left:13px;color:#fff}'+
     '  .step{margin:0;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#cfd8e3}'+
-    '  .chev{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;color:var(--brandLt);font-size:30px;font-weight:700;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}'+
     '  .form-side{position:relative;padding:38px 38px 26px;background:#fbfcfe;overflow-y:auto;overflow-x:hidden;min-width:0;display:flex;flex-direction:column;justify-content:center}'+
     '  @keyframes lampReveal{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}'+
     '  body.lit .form-side{animation:lampReveal .5s cubic-bezier(.4,0,.2,1)}'+
-    '  body.off .lampwrap{width:min(430px,100%);grid-template-columns:1fr 0fr}body.off .form-side{display:none}body.off .chev{opacity:0}'+
+    '  body.off .lampwrap{width:min(430px,100%);grid-template-columns:1fr 0fr}body.off .form-side{display:none}'+
     '  .wifi{position:absolute;top:24px;right:28px;width:32px;height:32px;color:var(--brand)}'+
     '  .form-side h2{margin:0 0 4px;font-size:16px;font-weight:800;color:var(--ink);letter-spacing:.02em;text-transform:uppercase;padding-right:40px}'+
     '  .fsub{margin:0 0 22px;font-size:13px;color:var(--dim)}'+
@@ -462,7 +461,7 @@ function lampLayout(state,t,f,chip,p,logo){
     '  .cnow{width:100%;margin-top:6px;font:inherit;font-weight:800;font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--onAccent);background:linear-gradient(135deg,var(--brandLt),var(--brand));border:0;border-radius:999px;padding:15px;cursor:pointer;box-shadow:0 16px 32px -12px var(--btnShadow);transition:transform .15s}'+
     '  .cnow:hover{transform:translateY(-2px)}'+
     '  .powered{margin:18px 0 0;text-align:center;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}'+
-    '  @media(max-width:720px){.lampwrap{grid-template-columns:1fr;max-width:400px;height:auto}.chev{display:none}.lamp-side{aspect-ratio:4/5;min-height:340px}.lampui{padding-bottom:28px}.form-side{justify-content:flex-start}body.off .form-side{display:none}}';
+    '  @media(max-width:720px){.lampwrap{grid-template-columns:1fr;max-width:400px;height:auto}.lamp-side{aspect-ratio:4/5;min-height:340px}.lampui{padding-bottom:28px}.form-side{justify-content:flex-start}body.off .form-side{display:none}}';
 
   var switchJS='\n  <script>(function(){var b=document.body,s=document.getElementById("sw");b.classList.add("off");'+
     'function set(on){b.classList.toggle("lit",on);b.classList.toggle("off",!on);s.setAttribute("aria-checked",on?"true":"false");var x=s.querySelector(".tg-txt");if(x)x.textContent=on?"ON":"OFF";var u=document.getElementById("user");if(on&&u)setTimeout(function(){u.focus();},550);}'+
@@ -477,7 +476,6 @@ function lampLayout(state,t,f,chip,p,logo){
     '<div class="lampui">'+
     '<div class="toggle" id="sw" role="switch" aria-checked="false" tabindex="0"><span class="tg-knob"></span><span class="tg-txt">OFF</span></div>'+
     '<p class="step">'+step1+'</p></div></section>'+
-    '<div class="chev">&#8250;</div>'+
     '<section class="form-side">'+wifi+'<h2>'+step2+'</h2><p class="fsub">'+esc(t.signinSub)+'</p>'+form+'<p class="powered">'+powered+'</p></section>'+
     '</main>'+modal;
 
