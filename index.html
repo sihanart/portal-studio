@@ -373,6 +373,84 @@ function themeVars(p){
 }
 function hexToRgba(hex,a){var c=hexToRgb(hex);return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')';}
 
+/* ===== Light-switch "lamp" experience: left = desk lamp + ON/OFF toggle (step 1),
+   right = login form that lights up once the lamp is on (step 2). ===== */
+function lampLayout(state,t,f,chip,p,logo){
+  var th=state.lang==='th';
+  var step1=th?'1. เปิดไฟ':'1. Turn on the light';
+  var step2=th?'2. เชื่อมต่อ Wi-Fi':'2. Connect to Guest Wi-Fi';
+  var powered='Powered by '+esc(state.brandName||'Network');
+  var LAMP='<svg class="lampsvg" viewBox="0 0 220 240" fill="none">'+
+    '<defs>'+
+    '<radialGradient id="lg" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#ffe8ab" stop-opacity=".95"/><stop offset="1" stop-color="#ffe8ab" stop-opacity="0"/></radialGradient>'+
+    '<linearGradient id="lc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffdf9e" stop-opacity=".55"/><stop offset="1" stop-color="#ffdf9e" stop-opacity="0"/></linearGradient>'+
+    '</defs>'+
+    '<path class="cone" d="M132 96 L92 216 L176 216 Z" fill="url(#lc)"/>'+
+    '<ellipse cx="72" cy="220" rx="60" ry="8" fill="rgba(0,0,0,.35)"/>'+
+    '<rect x="34" y="206" width="78" height="13" rx="6.5" fill="#39414c"/>'+
+    '<line x1="72" y1="208" x2="102" y2="122" stroke="#525b66" stroke-width="9" stroke-linecap="round"/>'+
+    '<circle cx="102" cy="120" r="8" fill="#646e7a"/>'+
+    '<line x1="102" y1="120" x2="156" y2="86" stroke="#525b66" stroke-width="9" stroke-linecap="round"/>'+
+    '<g transform="rotate(54 150 82)"><rect x="120" y="58" width="54" height="44" rx="12" fill="#5b6470"/><rect x="120" y="58" width="54" height="13" rx="6.5" fill="#6d7783"/></g>'+
+    '<circle class="glow" cx="132" cy="98" r="34" fill="url(#lg)"/>'+
+    '<circle class="bulb" cx="132" cy="98" r="11" fill="#39414c"/>'+
+    '</svg>';
+  var wifi='<svg class="wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5a15 15 0 0 1 20 0"/><path d="M5 12a10 10 0 0 1 14 0"/><path d="M8.5 15.5a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg>';
+  var keyi='<svg class="keyi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15 20 3"/><path d="M17.5 5.5 20 8"/><path d="M15 8l2 2"/></svg>';
+
+  var form='<form id="lf" class="lampform" method="POST" action="'+f.action+'" autocomplete="off">'+
+    '<label for="user">'+(th?'รหัส Voucher / ชื่อผู้ใช้':'Voucher Code / Username')+'</label>'+
+    '<div class="fi"><input id="user" name="user" type="text" autocapitalize="none" autocomplete="username" placeholder="guest.name" required></div>'+
+    '<label for="password">'+esc(t.pass)+'</label>'+
+    '<div class="fi"><input id="password" name="password" type="password" autocomplete="current-password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" required>'+keyi+'</div>'+
+    '<button class="cnow" type="submit">'+esc(t.connect)+'</button>'+
+    '</form>';
+
+  var css=
+    '  *{box-sizing:border-box}html,body{height:100%}'+
+    '  body{margin:0;min-height:100dvh;display:grid;place-items:center;padding:clamp(12px,3vw,40px);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,"Noto Sans Thai","Leelawadee UI",sans-serif;-webkit-font-smoothing:antialiased;background:radial-gradient(120% 90% at 12% 8%,var(--glowA),transparent 55%),linear-gradient(160deg,var(--bg),var(--bg2)) fixed}'+
+    '  .lampwrap{position:relative;width:min(960px,100%);display:grid;grid-template-columns:1fr 1fr;background:#fff;border:1px solid var(--hair);border-radius:26px;overflow:hidden;box-shadow:0 45px 95px -34px rgba(0,0,0,.55)}'+
+    '  .lamp-side{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:48px 34px;text-align:center;background:radial-gradient(120% 85% at 50% 22%,#212834,#0b0e13);transition:background .55s}'+
+    '  body.lit .lamp-side{background:radial-gradient(120% 85% at 50% 18%,#34414f,#12161d)}'+
+    '  .lampsvg{width:170px;height:auto;display:block}'+
+    '  .bulb{transition:fill .35s}.glow,.cone{opacity:0;transition:opacity .5s}'+
+    '  body.lit .bulb{fill:#fff1ba}body.lit .glow{opacity:1}body.lit .cone{opacity:1}'+
+    '  .toggle{position:relative;width:76px;height:34px;border-radius:999px;background:#3b414b;cursor:pointer;transition:background .3s;box-shadow:inset 0 1px 3px rgba(0,0,0,.55)}'+
+    '  .toggle .tg-knob{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;transition:left .3s;box-shadow:0 2px 5px rgba(0,0,0,.45)}'+
+    '  .toggle .tg-txt{position:absolute;top:50%;right:13px;transform:translateY(-50%);font-size:10px;font-weight:800;letter-spacing:.12em;color:#c4ccd6}'+
+    '  body.lit .toggle{background:linear-gradient(135deg,var(--brandLt),var(--brand))}body.lit .toggle .tg-knob{left:45px}body.lit .toggle .tg-txt{right:auto;left:13px;color:#fff}'+
+    '  .step{margin:0;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#cfd8e3}'+
+    '  .chev{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;color:var(--brandLt);font-size:30px;font-weight:700;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}'+
+    '  .form-side{position:relative;padding:42px 40px 30px;background:#fbfcfe;transition:opacity .5s,filter .5s}'+
+    '  body.off .form-side{opacity:.4;filter:grayscale(.55);pointer-events:none;-webkit-user-select:none;user-select:none}'+
+    '  .wifi{position:absolute;top:24px;right:28px;width:32px;height:32px;color:var(--brand)}'+
+    '  .form-side h2{margin:0 0 22px;font-size:16px;font-weight:800;color:var(--ink);letter-spacing:.02em;text-transform:uppercase;padding-right:40px}'+
+    '  .lampform label{display:block;font-size:12px;font-weight:600;color:var(--dim);margin:0 0 6px}'+
+    '  .fi{position:relative;margin-bottom:16px}'+
+    '  .fi input{width:100%;font:inherit;font-size:15px;color:var(--ink);background:#fff;border:1px solid var(--fieldBd);border-radius:999px;padding:13px 18px;outline:none;box-shadow:0 2px 7px rgba(20,30,40,.06)}'+
+    '  .fi input:focus{border-color:var(--brand);box-shadow:0 0 0 4px var(--focus)}'+
+    '  .fi .keyi{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--faint);pointer-events:none}'+
+    '  .cnow{width:100%;margin-top:6px;font:inherit;font-weight:800;font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--onAccent);background:linear-gradient(135deg,var(--brandLt),var(--brand));border:0;border-radius:999px;padding:15px;cursor:pointer;box-shadow:0 16px 32px -12px var(--btnShadow);transition:transform .15s}'+
+    '  .cnow:hover{transform:translateY(-2px)}'+
+    '  .powered{margin:18px 0 0;text-align:center;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}'+
+    '  @media(max-width:720px){.lampwrap{grid-template-columns:1fr;max-width:400px}.chev{display:none}.lamp-side{padding:34px}}';
+
+  var switchJS='\n  <script>(function(){var b=document.body,s=document.getElementById("sw");b.classList.add("off");'+
+    'function set(on){b.classList.toggle("lit",on);b.classList.toggle("off",!on);s.setAttribute("aria-checked",on?"true":"false");var x=s.querySelector(".tg-txt");if(x)x.textContent=on?"ON":"OFF";var u=document.getElementById("user");if(on&&u)setTimeout(function(){u.focus();},550);}'+
+    's.addEventListener("click",function(){set(!b.classList.contains("lit"));});'+
+    's.addEventListener("keydown",function(e){if(e.key===" "||e.key==="Enter"){e.preventDefault();set(!b.classList.contains("lit"));}});})();<\/script>';
+
+  var body='<main class="lampwrap">'+
+    '<section class="lamp-side">'+LAMP+
+    '<div class="toggle" id="sw" role="switch" aria-checked="false" tabindex="0"><span class="tg-knob"></span><span class="tg-txt">OFF</span></div>'+
+    '<p class="step">'+step1+'</p></section>'+
+    '<div class="chev">&#8250;</div>'+
+    '<section class="form-side">'+wifi+'<h2>'+step2+'</h2>'+form+'<p class="powered">'+powered+'</p></section>'+
+    '</main>';
+
+  return {css:css, body:body+f.wire+switchJS};
+}
+
 /* ============================ body markup per pattern ============ */
 function bodyMarkup(state){
   var t=strs(state), f=formBlock(state), logo=logoMarkup(state);
@@ -385,6 +463,8 @@ function bodyMarkup(state){
   var formPanel=
     '<div class="form-wrap"><div class="fh"><div><h2>'+t.signin+'</h2><p>'+t.signinSub+'</p></div></div>'+f.html+'</div>';
   var chip='<div class="logo-chip">'+logo+'</div>';
+
+  if(state.lightSwitch) return lampLayout(state,t,f,chip,palette(state.accent),logo);
 
   var switchBlock = state.lightSwitch ?
     '<div class="switchbox"><button class="switch" id="sw" type="button" aria-label="Toggle Wi-Fi login">'+
@@ -547,7 +627,7 @@ function render(){
   $('#pv').srcdoc = state.platform==='clearpass' ? buildClearPassPreview(state) : buildLogin(state);
   // ClearPass renders its own form → the visual is always the stacked skin; Pattern doesn't apply
   var patterns=document.getElementById('patterns');
-  if(patterns) patterns.style.opacity = state.platform==='clearpass' ? '.45' : '1';
+  if(patterns) patterns.style.opacity = (state.platform==='clearpass'||state.lightSwitch) ? '.45' : '1';
   if(!$('#exportView').hidden) buildExport();
 }
 function buildExport(){
