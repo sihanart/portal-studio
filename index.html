@@ -347,15 +347,12 @@ function coreCSS(p,state){
 function gateCSS(state){
   if(!state.lightSwitch) return '';
   return(
-  '  .gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;text-align:center;padding:24px;background:radial-gradient(70% 55% at 50% 34%,var(--glowA),transparent 60%),linear-gradient(180deg,#05100c,#020604);transition:opacity .5s,visibility .5s}'+
-  '  body.lit .gate{opacity:0;visibility:hidden;pointer-events:none}'+
-  '  .gi{display:flex;flex-direction:column;align-items:center;gap:22px;color:#eafaef}'+
-  '  .plate{position:relative;width:90px;height:150px;border-radius:20px;background:linear-gradient(#111c16,#0a120d);border:1px solid rgba(255,255,255,.06);box-shadow:inset 0 2px 8px rgba(0,0,0,.7)}'+
-  '  .knob{position:absolute;left:8px;right:8px;bottom:8px;height:64px;border-radius:14px;background:linear-gradient(#2c3c31,#18231b);display:grid;place-items:center;color:#6d8074;transition:bottom .3s cubic-bezier(.34,1.3,.5,1),background .3s}'+
-  '  body.lit .knob{bottom:calc(100% - 72px);background:linear-gradient(var(--brandLt),var(--brand));color:var(--onAccent)}'+
-  '  .gate .switch{background:none;border:0;cursor:pointer;padding:0}.gh{margin:0;font-size:13.5px;color:#8fb39b}.gt{margin:0;font-size:19px;font-weight:800}'+
-  '  .loff{position:fixed;top:16px;left:16px;z-index:40;display:none;align-items:center;gap:7px;background:var(--field);border:1px solid var(--fieldBd);color:var(--dim);border-radius:999px;padding:7px 13px;font:inherit;font-size:12px;font-weight:600;cursor:pointer}'+
-  '  body.lit .loff{display:inline-flex}'
+  '  .switchbox{display:flex;align-items:center;gap:16px;margin-top:22px}'+
+  '  .switch{background:none;border:0;cursor:pointer;padding:0;flex:none}'+
+  '  .plate{position:relative;width:58px;height:96px;border-radius:15px;background:linear-gradient(#141c28,#0a0f16);border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 2px 8px rgba(0,0,0,.7)}'+
+  '  .knob{position:absolute;left:7px;right:7px;bottom:7px;height:41px;border-radius:10px;background:linear-gradient(#2a3442,#171d26);display:grid;place-items:center;color:#7d8ba0;transition:bottom .32s cubic-bezier(.34,1.3,.5,1),background .3s,color .3s}'+
+  '  body.lit .knob{bottom:calc(100% - 48px);background:linear-gradient(var(--brandLt),var(--brand));color:var(--onAccent)}'+
+  '  .swhint .gt{margin:0;font-size:15px;font-weight:800;color:var(--panelText)}.swhint .gh{margin:3px 0 0;font-size:12.5px;color:var(--panelDim)}'
   );
 }
 function themeVars(p){
@@ -389,15 +386,14 @@ function bodyMarkup(state){
     '<div class="form-wrap"><div class="fh"><div><h2>'+t.signin+'</h2><p>'+t.signinSub+'</p></div></div>'+f.html+'</div>';
   var chip='<div class="logo-chip">'+logo+'</div>';
 
-  var gate = state.lightSwitch ?
-    '<div class="gate" id="gate"><div class="gi">'+chip+
-    '<div><p class="gt">'+t.gateTitle+'</p><p class="gh">'+t.gateHint+'</p></div>'+
-    '<button class="switch" id="sw"><span class="plate"><span class="knob"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v9"/><path d="M6.5 6.5a8 8 0 1 0 11 0"/></svg></span></span></button>'+
-    '</div></div><button class="loff" id="lo">'+t.lightsOff+'</button>' : '';
+  var switchBlock = state.lightSwitch ?
+    '<div class="switchbox"><button class="switch" id="sw" type="button" aria-label="Toggle Wi-Fi login">'+
+    '<span class="plate"><span class="knob"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v9"/><path d="M6.5 6.5a8 8 0 1 0 11 0"/></svg></span></span></button>'+
+    '<div class="swhint"><p class="gt">'+t.gateTitle+'</p><p class="gh">'+t.gateHint+'</p></div></div>' : '';
 
   var gateJS = state.lightSwitch ?
-    '\n  <script>(function(){var b=document.body,s=document.getElementById("sw"),o=document.getElementById("lo");'+
-    'function set(v){b.classList.toggle("lit",v);}s.onclick=function(){set(!b.classList.contains("lit"));};o.onclick=function(){set(false);};})();<\/script>' : '';
+    '\n  <script>(function(){var b=document.body,s=document.getElementById("sw");b.classList.add("off");'+
+    'if(s)s.addEventListener("click",function(){var on=!b.classList.contains("lit");b.classList.toggle("lit",on);b.classList.toggle("off",!on);});})();<\/script>' : '';
 
   var modal='<div class="tmodal" id="tmodal" hidden><div class="tbox">'+
     '<div class="thead"><span>'+esc(t.termsTitle||'Terms of Use')+'</span><button class="tx" id="tx" type="button" aria-label="Close">&#10005;</button></div>'+
@@ -416,18 +412,27 @@ function bodyMarkup(state){
     lay='  .shell{width:min(980px,100%);display:grid;grid-template-columns:1.05fr 1fr;background:var(--card,rgba(255,255,255,.72));border:1px solid var(--hair);border-radius:26px;box-shadow:0 40px 80px -30px rgba(0,0,0,.4);overflow:hidden;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}'+
       '  .brand{position:relative;padding:38px 40px;color:var(--panelText);display:flex;flex-direction:column;gap:22px;background:radial-gradient(120% 90% at 10% 6%,'+hexToRgba(palette(state.accent).brandLt,.32)+',transparent 55%),linear-gradient(155deg,var(--deep),var(--deep2))}'+
       '  .brand .logo-chip{align-self:flex-start}.brand-copy{margin-top:auto}.form-wrap{padding:40px clamp(28px,4vw,44px)}.fh h2{font-weight:700;font-size:23px;margin:0 0 4px}.fh p{margin:0 0 20px;font-size:13.5px;color:var(--dim)}'+
+      (state.lightSwitch?
+        '  .shell{transition:grid-template-columns .55s cubic-bezier(.4,0,.2,1)}.fcol{overflow:hidden;min-width:0;transition:opacity .45s .05s}'+
+        '  body.off .shell{grid-template-columns:1fr 0fr}body.off .fcol{opacity:0}'+
+        '  @media(max-width:760px){body.off .fcol{display:none}}' : '')+
       '  @media(max-width:760px){.shell{grid-template-columns:1fr;max-width:440px}.perks,.lead{display:none}}';
-    var body='<main class="shell"><section class="brand">'+chip+brandInner+'</section><section>'+formPanel+'</section></main>';
-    return {css:css+lay, body:gate+body+extra};
+    var body='<main class="shell"><section class="brand">'+chip+brandInner+switchBlock+'</section><section class="fcol">'+formPanel+'</section></main>';
+    return {css:css+lay, body:body+extra};
   }
   if(state.pattern==='stacked'){
     lay='  .shell{width:min(430px,100%);background:var(--card,#fff);border:1px solid var(--hair);border-radius:24px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(0,0,0,.35)}'+
       '  .brand{padding:30px 34px 22px;text-align:center;color:var(--panelText);background:radial-gradient(120% 100% at 12% 0%,'+hexToRgba(palette(state.accent).brandLt,.34)+',transparent 55%),linear-gradient(155deg,var(--deep),var(--deep2))}'+
       '  .brand .logo-chip{display:block;margin:0 auto 4px}.brand .eyebrow{margin-top:14px}.brand h2{margin:6px 0 2px;font-size:19px;font-weight:800}.brand .sm{margin:0;font-size:12.5px;color:var(--panelDim)}'+
-      '  .form-wrap{padding:26px 34px 30px}.fh{display:none}.tagline,.perks,.lead,.hero{display:none}';
-    var b2='<main class="shell"><section class="brand">'+chip+'<span class="eyebrow" style="margin-top:14px"><i></i>'+t.online+'</span><h2>'+t.signin+'</h2><p class="sm">'+t.signinSub+'</p></section>'+
+      '  .form-wrap{padding:26px 34px 30px}.fh{display:none}.tagline,.perks,.lead,.hero{display:none}'+
+      (state.lightSwitch?
+        '  .brand .switchbox{justify-content:center;margin:16px 0 2px}'+
+        '  .form-wrap{overflow:hidden;max-height:600px;transition:max-height .5s ease,opacity .4s,padding .4s}'+
+        '  body.off .form-wrap{max-height:0;opacity:0;padding-top:0;padding-bottom:0}' : '');
+    var swline = state.lightSwitch ? switchBlock : '';
+    var b2='<main class="shell"><section class="brand">'+chip+'<span class="eyebrow" style="margin-top:14px"><i></i>'+t.online+'</span><h2>'+t.signin+'</h2><p class="sm">'+t.signinSub+'</p>'+swline+'</section>'+
       '<section class="form-wrap">'+f.html+'<div style="text-align:center;margin-top:14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)">'+state.tagline+'</div></section></main>';
-    return {css:css+lay, body:gate+b2+extra};
+    return {css:css+lay, body:b2+extra};
   }
   // fullscreen
   lay='  body{background:radial-gradient(120% 90% at 15% 10%,'+hexToRgba(palette(state.accent).brandLt,.30)+',transparent 55%),radial-gradient(100% 90% at 90% 100%,'+hexToRgba(palette(state.accent).brand,.24)+',transparent 55%),linear-gradient(155deg,var(--deep),var(--deep2)) !important}'+
@@ -436,10 +441,15 @@ function bodyMarkup(state){
     '  .full .lead{margin:0 auto 24px;color:var(--panelDim)}'+
     '  .glass{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:26px 26px 22px;text-align:left;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}'+
     '  .glass label{color:#dfeede}.glass input{background:rgba(0,0,0,.25);border-color:rgba(255,255,255,.18);color:#fff}.glass .chk{color:var(--panelDim)}'+
-    '  .full .tagline{display:block;margin-top:18px;color:var(--panelDim)}';
-  var b3='<main class="full"><div class="chipwrap">'+chip+'</div><h1>'+t.welcome+'</h1><p class="lead">'+t.sub+'</p>'+
+    '  .full .tagline{display:block;margin-top:18px;color:var(--panelDim)}'+
+    (state.lightSwitch?
+      '  .full .switchbox{justify-content:center;margin:0 auto 20px}'+
+      '  .glass{overflow:hidden;transition:opacity .5s,transform .5s,max-height .5s,padding .5s;transform-origin:top}'+
+      '  body.off .glass{opacity:0;transform:translateY(8px) scale(.98);pointer-events:none;max-height:0;padding-top:0;padding-bottom:0}' : '');
+  var swline = state.lightSwitch ? switchBlock : '';
+  var b3='<main class="full"><div class="chipwrap">'+chip+'</div><h1>'+t.welcome+'</h1><p class="lead">'+t.sub+'</p>'+swline+
     '<div class="glass">'+f.html+'</div><div class="tagline">'+state.tagline+'</div></main>';
-  return {css:css+lay, body:gate+b3+extra};
+  return {css:css+lay, body:b3+extra};
 }
 
 /* full standalone document */
