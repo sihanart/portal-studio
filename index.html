@@ -377,8 +377,8 @@ function hexToRgba(hex,a){var c=hexToRgb(hex);return 'rgba('+c[0]+','+c[1]+','+c
    right = login form that lights up once the lamp is on (step 2). ===== */
 function lampLayout(state,t,f,chip,p,logo){
   var th=state.lang==='th';
-  var step1=th?'1. เปิดไฟ':'1. Turn on the light';
-  var step2=th?'2. เชื่อมต่อ Wi-Fi':'2. Connect to Guest Wi-Fi';
+  var step1=th?'เปิดไฟ':'Turn on the light';
+  var step2=th?'เชื่อมต่อ Wi-Fi':'Connect to Guest Wi-Fi';
   var powered='Powered by '+esc(state.brandName||'Network');
   var LAMP='<svg class="lampsvg" viewBox="0 0 240 262" fill="none">'+
     '<defs>'+
