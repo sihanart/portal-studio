@@ -427,8 +427,8 @@ function lampLayout(state,t,f,chip,p,logo){
     '  *{box-sizing:border-box}html,body{height:100%}'+
     '  body{margin:0;min-height:100dvh;display:grid;place-items:center;padding:clamp(12px,3vw,40px);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,"Noto Sans Thai","Leelawadee UI",sans-serif;-webkit-font-smoothing:antialiased;background:radial-gradient(120% 90% at 12% 8%,var(--glowA),transparent 55%),linear-gradient(160deg,var(--bg),var(--bg2)) fixed}'+
     '  .lampwrap{position:relative;width:min(900px,100%);height:min(500px,78vh);display:grid;grid-template-columns:1fr 1fr;background:#0b0e13;border:1px solid var(--hair);border-radius:26px;overflow:hidden;box-shadow:0 45px 95px -34px rgba(0,0,0,.55);transition:width .5s cubic-bezier(.4,0,.2,1)}'+
-    '  .lamp-side{position:relative;min-width:0;overflow:hidden;background:#343a42;transition:background .6s ease}'+
-    '  body.lit .lamp-side{background:#453d35}'+
+    '  .lamp-side{position:relative;min-width:0;overflow:hidden;background:#2a2f36}'+
+    '  .lampbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.18);filter:blur(30px) brightness(.9);transition:opacity .6s ease}'+
     '  .lampimg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;transition:opacity .6s ease}'+
     '  .lampoff{opacity:1}.lampon{opacity:0}'+
     '  body.lit .lampoff{opacity:0}body.lit .lampon{opacity:1}'+
@@ -470,6 +470,8 @@ function lampLayout(state,t,f,chip,p,logo){
 
   var body='<main class="lampwrap">'+
     '<section class="lamp-side">'+
+    '<img class="lampbg lampoff" src="'+LAMP_OFF+'" alt="" aria-hidden="true">'+
+    '<img class="lampbg lampon" src="'+LAMP_ON+'" alt="" aria-hidden="true">'+
     '<img class="lampimg lampoff" src="'+LAMP_OFF+'" alt="">'+
     '<img class="lampimg lampon" src="'+LAMP_ON+'" alt="">'+
     '<div class="lampscrim"></div>'+
