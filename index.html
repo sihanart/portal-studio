@@ -446,6 +446,7 @@ function lampLayout(state,t,f,chip,p,logo){
     '  body.lit .form-side{animation:lampReveal .5s cubic-bezier(.4,0,.2,1)}'+
     '  body.off .lampwrap{width:min(430px,100%);grid-template-columns:1fr 0fr}body.off .form-side{display:none}'+
     '  .wifi{position:absolute;top:24px;right:28px;width:32px;height:32px;color:var(--brand)}'+
+    '  .lamplogo{margin:0 0 18px}.lamplogo img{height:34px!important;width:auto;display:block}'+
     '  .form-side h2{margin:0 0 4px;font-size:16px;font-weight:800;color:var(--ink);letter-spacing:.02em;text-transform:uppercase;padding-right:40px}'+
     '  .fsub{margin:0 0 22px;font-size:13px;color:var(--dim)}'+
     '  .lchk{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--dim);margin:2px 0 16px}.lchk input{accent-color:var(--brand);width:16px;height:16px;flex:none}.lchk a{color:var(--brand)}'+
@@ -479,7 +480,7 @@ function lampLayout(state,t,f,chip,p,logo){
     '<div class="lampui">'+
     '<div class="toggle" id="sw" role="switch" aria-checked="false" tabindex="0"><span class="tg-knob"></span><span class="tg-txt">OFF</span></div>'+
     '<p class="step">'+step1+'</p></div></section>'+
-    '<section class="form-side">'+wifi+'<h2>'+step2+'</h2><p class="fsub">'+esc(t.signinSub)+'</p>'+form+'<p class="powered">'+powered+'</p></section>'+
+    '<section class="form-side">'+wifi+'<div class="lamplogo">'+logo+'</div><h2>'+step2+'</h2><p class="fsub">'+esc(t.signinSub)+'</p>'+form+'<p class="powered">'+powered+'</p></section>'+
     '</main>'+modal;
 
   return {css:css, body:body+f.wire+switchJS+modalJS};
