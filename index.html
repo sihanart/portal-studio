@@ -613,7 +613,7 @@ function bodyMarkup(state){
 
 /* ============ Intro-gate overlay (slide / jigsaw / wheel) — covers the login until solved ============ */
 function gateOverlay(state){
-  var th=state.lang==='th', logo=logoMarkup(state), connect=th?'เชื่อมต่อ Wi-Fi':'Connect to Wi-Fi';
+  var th=state.lang==='th', ct=!!state.clickthrough, logo=logoMarkup(state), connect=th?'เชื่อมต่อ Wi-Fi':'Connect to Wi-Fi';
   var shell=
     '  .xgate{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:22px;background:radial-gradient(120% 90% at 15% 10%,var(--glowA),transparent 55%),radial-gradient(100% 90% at 90% 100%,var(--glowB),transparent 55%),linear-gradient(155deg,var(--deep),var(--deep2));transition:opacity .55s ease,visibility .55s}'+
     '  body.unlocked .xgate{opacity:0;visibility:hidden;pointer-events:none}'+
@@ -627,7 +627,7 @@ function gateOverlay(state){
   var title,sub,widget,wcss,wjs;
   if(state.gate==='slide'){
     title=th?'พร้อมเชื่อมต่อ Wi-Fi?':'Ready to connect?';
-    sub=th?'เลื่อนแถบด้านล่างเพื่อเข้าสู่หน้าล็อกอิน':'Slide the bar to reach the login';
+    sub=ct?(th?'เลื่อนแถบเพื่อเชื่อมต่อ Wi-Fi ได้เลย':'Slide the bar to connect to Wi-Fi'):(th?'เลื่อนแถบด้านล่างเพื่อเข้าสู่หน้าล็อกอิน':'Slide the bar to reach the login');
     widget='<div class="sg-track" id="sgTrack"><div class="sg-fill" id="sgFill"></div><span class="sg-txt" id="sgTxt">'+(th?'เลื่อนเพื่อเชื่อมต่อ':'Slide to connect')+' &#8594;</span><button class="sg-knob" id="sgKnob" type="button" aria-label="'+(th?'เลื่อนเพื่อเชื่อมต่อ':'Slide to connect')+'">&#8250;</button></div>';
     wcss='  .sg-track{position:relative;height:62px;border-radius:999px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}'+
       '  .sg-fill{position:absolute;left:0;top:0;bottom:0;width:62px;background:linear-gradient(135deg,var(--brandLt),var(--brand));border-radius:999px}'+
@@ -645,7 +645,7 @@ function gateOverlay(state){
       'kn.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();mv(mx()+5);dn();}});';
   } else if(state.gate==='jigsaw'){
     title=th?'ต่อจิ๊กซอว์เพื่อเข้า':'Solve to continue';
-    sub=th?'ลากชิ้นส่วนให้เข้าช่องเพื่อเชื่อมต่อ':'Drag the piece into the slot to connect';
+    sub=ct?(th?'ลากชิ้นส่วนให้เข้าช่องเพื่อเชื่อมต่อ Wi-Fi':'Drag the piece into the slot to connect to Wi-Fi'):(th?'ลากชิ้นส่วนให้เข้าช่องเพื่อดำเนินการต่อ':'Drag the piece into the slot to continue');
     widget='<div class="jg-board" id="jgBoard"><div class="jg-slot" id="jgSlot"></div><div class="jg-piece" id="jgPiece" role="button" tabindex="0" aria-label="'+(th?'ลากชิ้นส่วน':'Drag piece')+'"></div></div><p class="jg-hint" id="jgHint">'+(th?'ลากชิ้นส่วนให้เข้าช่อง':'Drag the piece into place')+'</p>';
     wcss='  .jg-board{position:relative;height:150px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);overflow:hidden;touch-action:none}'+
       '  .jg-slot{position:absolute;top:50%;transform:translateY(-50%);width:60px;height:60px;border:2px dashed rgba(255,255,255,.55);border-radius:12px;transition:border-color .3s}'+
@@ -673,7 +673,7 @@ function gateOverlay(state){
       seg+='<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" fill="#fff" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle" transform="rotate('+(am*180/Math.PI).toFixed(1)+' '+lx.toFixed(1)+' '+ly.toFixed(1)+')">'+esc(prizes[i])+'</text>';}
     widget='<div class="sw-stage"><div class="sw-ptr"></div><svg class="sw-wheel" viewBox="0 0 280 280"><g id="swG">'+seg+'</g><circle cx="140" cy="140" r="20" fill="#fff"/></svg></div>'+
       '<button class="sw-spin" id="swSpin" type="button">'+(th?'หมุนวงล้อ!':'Spin!')+'</button>'+
-      '<div class="sw-res" id="swRes" hidden><p>'+(th?'คุณได้รับ':'You won')+' <b id="swPrize"></b></p><button class="sw-go" id="swGo" type="button">'+connect+' &#8594;</button></div>';
+      '<div class="sw-res" id="swRes" hidden><p>'+(th?'คุณได้รับ':'You won')+' <b id="swPrize"></b></p><button class="sw-go" id="swGo" type="button">'+(ct?connect:(th?'ดำเนินการต่อ':'Continue'))+' &#8594;</button></div>';
     wcss='  .sw-stage{position:relative;width:min(280px,78vw);margin:0 auto 18px}'+
       '  .sw-ptr{position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:22px solid #fff;z-index:2;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}'+
       '  .sw-wheel{width:100%;height:auto;display:block;border-radius:50%;box-shadow:0 14px 34px -10px rgba(0,0,0,.55)}'+
@@ -686,7 +686,9 @@ function gateOverlay(state){
       'go.addEventListener("click",xgUnlock);';
   }
   var head='<div class="xgate" id="xgate"><div class="xg"><span class="xg-chip">'+logo+'</span><h2 class="xg-title">'+title+'</h2><p class="xg-sub">'+sub+'</p>'+widget+'<p class="xg-foot">Powered by '+esc(state.brandName||'Network')+'</p></div></div>';
-  var js='\n  <script>(function(){function xgUnlock(){document.body.classList.add("unlocked");var u=document.getElementById("user");if(u)setTimeout(function(){try{u.focus();}catch(e){}},600);}'+wjs+'})();<\/script>';
+  var js='\n  <script>(function(){function xgUnlock(){document.body.classList.add("unlocked");'+
+    'if('+(ct?'true':'false')+'){var f=document.getElementById("lf");if(f){var cb=f.querySelector("input[type=checkbox]");if(cb)cb.checked=true;var b=f.querySelector("button[type=submit],input[type=submit]");setTimeout(function(){if(b)b.click();},350);}return;}'+
+    'var u=document.getElementById("user");if(u)setTimeout(function(){try{u.focus();}catch(e){}},600);}'+wjs+'})();<\/script>';
   return {css:shell+wcss, markup:head, js:js};
 }
 
