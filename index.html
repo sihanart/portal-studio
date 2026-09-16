@@ -686,9 +686,7 @@ function gateOverlay(state){
       'go.addEventListener("click",xgUnlock);';
   }
   var head='<div class="xgate" id="xgate"><div class="xg"><span class="xg-chip">'+logo+'</span><h2 class="xg-title">'+title+'</h2><p class="xg-sub">'+sub+'</p>'+widget+'<p class="xg-foot">Powered by '+esc(state.brandName||'Network')+'</p></div></div>';
-  var js='\n  <script>(function(){function xgUnlock(){document.body.classList.add("unlocked");'+
-    'if('+(ct?'true':'false')+'){var f=document.getElementById("lf");if(f){var cb=f.querySelector("input[type=checkbox]");if(cb)cb.checked=true;var b=f.querySelector("button[type=submit],input[type=submit]");setTimeout(function(){if(b)b.click();},350);}return;}'+
-    'var u=document.getElementById("user");if(u)setTimeout(function(){try{u.focus();}catch(e){}},600);}'+wjs+'})();<\/script>';
+  var js='\n  <script>(function(){function xgUnlock(){document.body.classList.add("unlocked");var u=document.getElementById("user");if(u)setTimeout(function(){try{u.focus();}catch(e){}},600);else{var b=document.querySelector(".go,.cnow");if(b)setTimeout(function(){try{b.focus();}catch(e){}},600);}}'+wjs+'})();<\/script>';
   return {css:shell+wcss, markup:head, js:js};
 }
 
@@ -790,7 +788,7 @@ function render(){
   document.documentElement.style.setProperty('--ui-accent',state.accent);
   var _html = state.platform==='clearpass' ? buildClearPassPreview(state) : buildLogin(state);
   // Preview-only guard: block real form navigation so submitting (or a click-through gate that auto-connects) doesn't blank the iframe. The exported/downloaded HTML has no such guard and posts for real.
-  _html = _html.replace('</body>', '<script>document.addEventListener("submit",function(e){e.preventDefault();},true);<\/script></body>');
+  _html = _html.replace('</body>', '<script>document.addEventListener("submit",function(e){e.preventDefault();var b=e.target.querySelector(".go,.cnow,button[type=submit],input[type=submit]");if(b)setTimeout(function(){b.classList.remove("busy");var th=document.documentElement.lang==="th";b.textContent=th?"✓ เชื่อมต่อแล้ว (ตัวอย่าง)":"✓ Connected (preview)";},800);},true);<\/script></body>');
   $('#pv').srcdoc = _html;
   // ClearPass renders its own form → the visual is always the stacked skin; Pattern doesn't apply
   var patterns=document.getElementById('patterns');
