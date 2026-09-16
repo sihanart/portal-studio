@@ -788,7 +788,10 @@ var HINTS={aos8:'Controller internal — POST /cgi-bin/login, fields user/passwo
 var $=function(s){return document.querySelector(s);};
 function render(){
   document.documentElement.style.setProperty('--ui-accent',state.accent);
-  $('#pv').srcdoc = state.platform==='clearpass' ? buildClearPassPreview(state) : buildLogin(state);
+  var _html = state.platform==='clearpass' ? buildClearPassPreview(state) : buildLogin(state);
+  // Preview-only guard: block real form navigation so submitting (or a click-through gate that auto-connects) doesn't blank the iframe. The exported/downloaded HTML has no such guard and posts for real.
+  _html = _html.replace('</body>', '<script>document.addEventListener("submit",function(e){e.preventDefault();},true);<\/script></body>');
+  $('#pv').srcdoc = _html;
   // ClearPass renders its own form → the visual is always the stacked skin; Pattern doesn't apply
   var patterns=document.getElementById('patterns');
   if(patterns) patterns.style.opacity = (state.platform==='clearpass'||state.lightSwitch) ? '.45' : '1';
